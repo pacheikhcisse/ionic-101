@@ -365,3 +365,23 @@ Ajoutons enfin `ion-floating-menu` comme dépendance de notre module dans `app.j
 ```
 angular.module('starter', ['ionic', 'todo', 'ion-floating-menu'])
 ```
+
+## Déploiement de notre appli
+
+Une fois qu'on a terminé de développer notre application, nous voulons la déployer sur nos téléphones. Nous allons voir comment le faire pour android.<br>
+Pour cela, il faut: 
+- installer la plateforme android dans notre appli grâce à la commande suivante
+  ```
+  $ ionic platform add android
+  ```
+  Cette commande va créer un dossier `platforms`dans notre projet et à l'intérieur de celui ci, un dossier `android` où se trouve les fichiers importants pour pouvoir builder le projet et obtenir un `.apk`<br>
+  Le fichier `config.xml` aussi est modifié en conséquence.
+  Cette commande installe également des plugins cordova qui sont essentiels à android. Cordova étant la partie qui communique avec le device.
+  
+ - lancer le build pour android avec 
+   ``` 
+   $ ionic build android
+   ```
+   Cette commande va créer un apk dans un dossier qui est indiqué à la fin du build.
+  
+Ces commandes nécessitent cependant d'avoir le SDK android sur son poste de travail.

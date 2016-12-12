@@ -1,6 +1,6 @@
 angular.module('todo', [])
 
-  .controller('TasksCtrl', function($scope, $rootScope) {
+  .controller('TasksCtrl', function($scope, $rootScope, $state) {
 
     $rootScope.tasks = [
       {title: 'Préparer le tenkogne Ionic', done: true},
@@ -21,6 +21,10 @@ angular.module('todo', [])
 
     $scope.deleteTask = function () {
       $rootScope.tasks.splice($rootScope.tasks.indexOf(this.task), 1);
+    }
+
+    $scope.goToAddTask = function () {
+      $state.go('app.newTask');
     }
 
   });
