@@ -31,6 +31,15 @@ angular.module('starter', ['ionic', 'todo'])
         templateUrl: 'templates/menu.html',
         controller: 'TasksCtrl'
       })
+      .state('app.newTask', {
+        url: '/new-task',
+        views: {
+          'menuContent': {
+            templateUrl: 'templates/new-task.html',
+            controller: 'TasksCtrl'
+          }
+        }
+      })
       .state('app.tasks', {
         url: '/tasks',
         views: {

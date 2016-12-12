@@ -15,17 +15,17 @@ This project aims to introduce some basic concepts of Ionic Framework through a 
 1. Créer un repository mytodo sur gitlab.com.
 2. Executer les commandes suivantes :
 
- ```
- $ mkdir ionic & cd ionic
- $ ionic start --appname MyTodo mytodo --template blank
- $ cd mytodo
- $ git init
- $ echo .editorconfig >> .gitignore
- $ git add .
- $ git commit -m "init ionic project"
- $ git remote add origin git@gitlab.com:[votre_user]/mytodo.git
- $ git push -u origin master 
- ```
+```
+$ mkdir ionic & cd ionic
+$ ionic start --appname MyTodo mytodo --template blank
+$ cd mytodo
+$ git init
+$ echo .editorconfig >> .gitignore
+$ git add .
+$ git commit -m "init ionic project"
+$ git remote add origin git@gitlab.com:[votre_user]/mytodo.git
+$ git push -u origin master 
+```
 `ionic start [options] <PATH> [template]`<br>
 Cette commande permet de créer un projet ionic. 
 
@@ -301,4 +301,29 @@ $scope.addTask = function() {
   }
   this.task.title = '';
 };
+```
+
+## Ajouter la suppression
+
+On décide de proposer la suppression d'une tâche lorsqu'on la glisse vers la gauche comme sur le gif. La directive `ionList` propose l'attribut booléén `can-swipe` indiquant si les éléments de la liste peuvent être 'swipe' pour laisser apparaître des buttons ou pas.<br>
+Nous ajoutons l'attribut à nos deux listes dans le fichier `tasks.html`:
+```
+<ion-list can-swipe="true">
+  ...
+</ion-list>
+```
+Puis le button à afficher (`ionOptionButton`) lorsqu'on 'swipe' est ajouté à l'intérieur des directives `ionItem` comme ceci :
+```
+<ion-list can-swipe="true">
+  <ion-item ...>
+    ...
+    <ion-option-button class="icon button-assertive ion-trash-b" ng-click="deleteTask()" />
+  </ion-item>
+</ion-list>
+```
+Un clic sur le bouton devrait supprimer la tâche concernée. On implémente la fonction `deleteTask()` comme ceci:
+```
+$scope.deleteTask = function () {
+  $rootScope.tasks.splice($rootScope.tasks.indexOf(this.task), 1);
+}
 ```

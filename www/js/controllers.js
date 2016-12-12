@@ -8,4 +8,15 @@ angular.module('todo', [])
       {title: 'Rencontrer un client', done: false}
     ];
 
+    $scope.addTask = function() {
+      if (this.task.title) {
+        var task = {
+          title: this.task.title,
+          done: false
+        };
+        $rootScope.tasks.push(task);
+      }
+      this.task.title = '';
+    };
+
   });
