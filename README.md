@@ -15,17 +15,17 @@ This project aims to introduce some basic concepts of Ionic Framework through a 
 1. Créer un repository mytodo sur gitlab.com.
 2. Executer les commandes suivantes :
 
-```
-$ mkdir ionic & cd ionic
-$ ionic start --appname MyTodo mytodo --template blank
-$ cd mytodo
-$ git init
-$ echo .editorconfig >> .gitignore
-$ git add .
-$ git commit -m "init ionic project"
-$ git remote add origin git@gitlab.com:[votre_user]/mytodo.git
-$ git push -u origin master 
-```
+ ```
+ $ mkdir ionic & cd ionic
+ $ ionic start --appname MyTodo mytodo --template blank
+ $ cd mytodo
+ $ git init
+ $ echo .editorconfig >> .gitignore
+ $ git add .
+ $ git commit -m "init ionic project"
+ $ git remote add origin git@gitlab.com:[votre_user]/mytodo.git
+ $ git push -u origin master 
+ ```
 `ionic start [options] <PATH> [template]`<br>
 Cette commande permet de créer un projet ionic. 
 
@@ -40,10 +40,10 @@ $ npm install -g ionic
 
 2. créer un projet ionic avec `ionic start` (déjà fait cependant dans notre cas)
 3. executer notre projet en local pour voir de quoi ça a l'air
- ```
- $ ionic serve
- ```
- `ionic serve -l` pour voir le rendu de l'application mobile sur différentes plateformes.
+```
+$ ionic serve
+```
+`ionic serve -l` pour voir le rendu de l'application mobile sur différentes plateformes.
 
 ## Step 1: créer le projet todo
 Nous allons à ce niveau créer notre application mobile de todo list. <br>
@@ -112,3 +112,146 @@ devient
 ```
 `<ion-pane></ion-pane>` est un conteneur. Il reçoit le header (`<ion-header-bar></ion-header-bar>`) et le contenu de l'application (`<ion-content></ion-content>`). <br> 
 Il est remplaçé par la directive `<ion-side-menus></ion-side-menus>`.
+
+## Créer les différentes vues de l'app
+
+### Créer la page 'All tasks'
+
+Nous allons créer un controleur `TasksCtrl` dans le fichier `controllers.js` puis à l'intérieur de celui ci nous initialisons un json array de tâches en dur.
+```
+angular.module('todo', [])
+
+.controller('TasksCtrl', function($scope, $rootScope) {
+
+  $rootScope.tasks = [
+    {title: 'Préparer le tenkogne Ionic', done: true},
+    {title: 'Aller à la foire', done: true},
+    {title: 'Rencontrer un client', done: false}
+  ];
+
+});
+
+```
+
+Dans `app.js` le module `todo` comprenant le contrôleur `TasksCtrl` est ajouté comme dépendance du module principal de l'application `starter`
+```
+angular.module('starter', ['ionic', 'todo'])
+```
+Ionic utilise AngularUI Router qui permet d'organiser l'application en plusieurs états.<br>
+La directive `ionNavView` est utilisé en concordance avec Angular UI Router pour afficher en un endroit (ici `index.html`) la vue correspondant à un état donné. Un état va correspondre à une vue indiquée par une URL `templateUrl`.<br>
+Du coup pour mettre en place les différents états de notre application, nous créeons un dossier templates comportant les différentes vues de l'application. Le menu résidera dans `templates/menu.html` et `index.html` devient: 
+```
+<body ng-app="starter">
+  <ion-nav-view></ion-nav-view>
+</body>
+```
+La liste des tâches créées dans le contrôleur `TasksCtrl` sera affichée par la vue `templates/tasks.html`.<br>
+`app.js` sera adapté comme ci dessous pour proposer la bonne vue en fonction de l'url invoquée.<br><br>
+Dans `app.js` on ajoutera aussi:
+```
+.config(function($stateProvider, $urlRouterProvider) {
+  $stateProvider
+    .state('app', {
+      url: '/app',
+      abstract: true,
+      templateUrl: 'templates/menu.html',
+      controller: 'TasksCtrl'
+    })
+    .state('app.tasks', {
+      url: '/tasks',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/tasks.html',
+          controller: 'TasksCtrl'
+        }
+      }
+    });
+
+  // if none of the above states are matched, use this as the fallback
+  $urlRouterProvider.otherwise('/app/tasks');
+
+})
+```
+Le fichier `templates/tasks.html`:
+```
+<ion-view view-title="All tasks">
+
+  <ion-content>
+
+    <div class="item item-divider" ng-if="(tasks|filter:{done:true}).length > 0">
+      Done
+    </div>
+    <ion-list>
+      <ion-item ng-repeat="task in tasks | filter : {done : true}" ng-model="task.done" class="checkbox-stable">
+        <div class="item-checkbox">
+          <label class="checkbox">
+            <input type="checkbox" ng-model="task.done" />
+          </label>
+          <span class="done-task">{{task.title}}</span>
+        </div>
+      </ion-item>
+    </ion-list>
+
+    <div class="item item-divider" ng-if="(tasks|filter:{done:false}).length > 0">
+      Not done
+    </div>
+    <ion-list>
+      <ion-item ng-repeat="task in tasks | filter : {done : false}" ng-model="task.done" class="checkbox-positive">
+        <div class="item-checkbox">
+          <label class="checkbox">
+            <input type="checkbox" ng-model="task.done" />
+          </label>
+          {{task.title}}
+        </div>
+      </ion-item>
+    </ion-list>
+
+  </ion-content>
+
+</ion-view>
+
+```
+le fichier `menu.html`:
+```
+<ion-side-menus>
+
+  <ion-side-menu side="left">
+    <ion-header-bar class="bar-assertive">
+      <h1 class="title">My Todo</h1>
+    </ion-header-bar>
+    <ion-content>
+      <div class="list">
+        <a class="item item-icon-left" href="#/app/new-task" menu-close>
+          <i class="icon ion-android-add-circle"></i>
+          Add a new task
+        </a>
+        <a class="item item-icon-left" href="#/app/tasks" menu-close>
+          <i class="icon ion-social-buffer"></i>
+          All tasks
+        </a>
+      </div>
+    </ion-content>
+  </ion-side-menu>
+
+  <ion-side-menu-content>
+    <ion-nav-bar class="bar-positive">
+      <ion-nav-back-button>
+      </ion-nav-back-button>
+      <ion-nav-buttons side="left">
+        <button class="button button-icon button-clear ion-navicon" menu-toggle="left">
+        </button>
+      </ion-nav-buttons>
+    </ion-nav-bar>
+    <ion-nav-view name="menuContent"></ion-nav-view>
+  </ion-side-menu-content>
+
+</ion-side-menus>
+
+```
+Enfin `css\style.css` est adapté pour affecter un style particulier aux tâches marquées comme 'done':
+```
+.done-task {
+  text-decoration: line-through;
+  color: #8f8f8f;
+}
+```
