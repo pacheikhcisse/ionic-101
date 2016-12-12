@@ -255,3 +255,50 @@ Enfin `css\style.css` est adapté pour affecter un style particulier aux tâches
   color: #8f8f8f;
 }
 ```
+
+### Créer la page 'Add a new task'
+
+Pour créer cette page, nous commencerons par créer la vue correspondante dans le dossier `templates`. Il s'agit d'un fichier `new-task.html`.
+```
+<ion-view view-title="Add a new task">
+  <ion-content>
+    <form ng-submit="addTask()">
+      <div class="list">
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">Task title</span>
+          <input type="text" placeholder="Task" ng-model="task.title">
+        </label>
+        <label class="item">
+          <button class="button button-block button-positive" type="submit">Add</button>
+        </label>
+      </div>
+    </form>
+  </ion-content>
+</ion-view>
+
+```
+Ensuite, nous ferons la redirection vers la vue créée en lui associant un état. Ceci dans `app.js` :
+```
+.state('app.newTask', {
+  url: '/new-task',
+  views: {
+    'menuContent': {
+      templateUrl: 'templates/new-task.html',
+      controller: 'TasksCtrl'
+    }
+  }
+})
+```
+On implémente la fonctionnalité d'ajout de tâche dans notre contrôleur. Nous crééons une fonction `addTask` pour ça:
+```
+$scope.addTask = function() {
+  if (this.task.title) {
+    var task = {
+      title: this.task.title,
+      done: false
+    };
+    $rootScope.tasks.push(task);
+  }
+  this.task.title = '';
+};
+```
