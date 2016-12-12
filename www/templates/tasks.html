@@ -5,7 +5,7 @@
     <div class="item item-divider" ng-if="(tasks|filter:{done:true}).length > 0">
       Done
     </div>
-    <ion-list>
+    <ion-list can-swipe="true">
       <ion-item ng-repeat="task in tasks | filter : {done : true}" ng-model="task.done" class="checkbox-stable">
         <div class="item-checkbox">
           <label class="checkbox">
@@ -13,13 +13,14 @@
           </label>
           <span class="done-task">{{task.title}}</span>
         </div>
+        <ion-option-button class="icon button-assertive ion-trash-b" ng-click="deleteTask()" />
       </ion-item>
     </ion-list>
 
     <div class="item item-divider" ng-if="(tasks|filter:{done:false}).length > 0">
       Not done
     </div>
-    <ion-list>
+    <ion-list can-swipe="true">
       <ion-item ng-repeat="task in tasks | filter : {done : false}" ng-model="task.done" class="checkbox-positive">
         <div class="item-checkbox">
           <label class="checkbox">
@@ -27,6 +28,7 @@
           </label>
           {{task.title}}
         </div>
+        <ion-option-button class="icon button-assertive ion-trash-b" ng-click="deleteTask()" />
       </ion-item>
     </ion-list>
 

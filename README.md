@@ -327,3 +327,41 @@ $scope.deleteTask = function () {
   $rootScope.tasks.splice($rootScope.tasks.indexOf(this.task), 1);
 }
 ```
+
+## Ajouter le `floating add button`
+
+Nous voulons ajouter un peu de material design dans notre application. Nous ajoutons au niveau de la liste des tâches un bouton pour l'ajout comme celui ci https://github.com/pregiotek/ion-floating-menu
+
+Pour cela installons le à l'aide de bower.
+```
+$ bower install ion-floating-menu
+```
+Cette commande ajoute les fichiers du package dans le dossier `www/lib` de notre projet. Il suffit juste d'adapter notre application en conséquence: <br><br>
+Dans `index.html`, on ajoute les fichiers css et js du package :
+```
+<head>
+  ...
+  <link href="lib/ion-floating-menu/dist/ion-floating-menu.css" rel="stylesheet" type="text/css"/>
+  ...
+  <script src="lib/ion-floating-menu/dist/ion-floating-menu.js" type="text/javascript"></script>
+  ...
+</head>
+```
+Ensuite, dans `tasks.html` juste après `ionView`, on insère le bouton grâce à ce bout de code :
+```
+<ion-floating-button click="goToAddTask()" button-class="positive-bg" button-color=""></ion-floating-button>
+```
+On créé la fonction `goToAddTask()` pour rediriger l'utilisateur vers la page de création de tâche, lorsqu'il clique sur le bouton.<br>
+Nous aurons au niveau de notre contrôleur:
+```
+controller('TasksCtrl', function($scope, $rootScope, $state) {
+  ...
+  $scope.goToAddTask = function () {
+    $state.go('app.newTask');
+  }
+});
+```
+Ajoutons enfin `ion-floating-menu` comme dépendance de notre module dans `app.js` :
+```
+angular.module('starter', ['ionic', 'todo', 'ion-floating-menu'])
+```

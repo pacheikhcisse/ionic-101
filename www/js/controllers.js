@@ -19,4 +19,8 @@ angular.module('todo', [])
       this.task.title = '';
     };
 
+    $scope.deleteTask = function () {
+      $rootScope.tasks.splice($rootScope.tasks.indexOf(this.task), 1);
+    }
+
   });
